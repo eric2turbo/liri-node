@@ -75,15 +75,23 @@ function moviethis() {
 
 	request(queryUrl, function(error, response, body) {
 		var movie = JSON.parse(body);
-		console.log("*" + movie.Title);
+		var title = movie.Title;
+		console.log("*" + title);
 		console.log("*" + movie.Year);
 		console.log("*" + movie.imdbRating);
 		console.log("*" + movie.Country);
 		console.log("*" + movie.Language);
 		console.log("*" + movie.Plot);
 		console.log("*" + movie.Actors);
-		var rottenTitle = movieName.replace(/\+/g, "_");
-		console.log("* https://www.rottentomatoes.com/m/" + rottenTitle + "/");
+		// var rottenTitle = movieName.replace(/\+/g, "_");
+		var newTitle = '';
+		for (var i=0; i<title.length;i++) {
+			if (["'", ".", ",", "-"].indexOf(title[i]) === -1) {
+				newTitle += title[i];
+			}
+		}
+		var rottenTitle = newTitle.replace(/\s/g, "_");
+		console.log("*https://www.rottentomatoes.com/m/" + rottenTitle + "/");
 
 	});
 
