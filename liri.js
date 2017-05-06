@@ -1,6 +1,8 @@
 //get twitter keys
 var twitterkeys = require("./keys.js");
 var fs = require("fs");
+var spotify = require('spotify');
+var twitter = require('twitter');
 var action = process.argv[2];
 
 switch (action) {
@@ -23,15 +25,11 @@ switch (action) {
 }
 
 //my-tweets
-var twitter = require('twitter');
+
 
 
 function mytweets() {
-    var twitterkeys = require("./keys.js");
-    var fs = require("fs");
-    var action = process.argv[2];
 
-    var twitter = require('twitter');
     var params = { screen_name: 'nodejs', count: 5 };
     var results = [];
 
@@ -47,8 +45,48 @@ function mytweets() {
 }
 
 //spotify-this-song
-function spotifythissong() {
+function aceofbass() {
+    spotify.lookup({ type: 'track', id: "0hrBpAOgrt8RXigk83LLNE" }, function(err, data) {
+        if (err) {
+            console.log('Error occurred: ' + err);
+            return;
+        }
+        // Do something with 'data' 
+        console.log("CBC recommends this song:");
+        console.log("Artist: " + data.album.artists[0].name);
+        console.log("Song: " + data.name);
+        console.log("Album: " + data.album.name);
+        console.log("Preview Link: " + data.preview_url);
+    });
+}
 
+function spotifythissong() {
+    // if command input array length bigger than 3
+    if (process.argv.length > 3) {
+        var song = process.argv[3];
+        song.replace(/\s/g, '+');
+
+        spotify.search({ type: 'track', query: song }, function(err, data) {
+            if (err) {
+                console.log('Error occurred: ' + err);
+                return;
+            }
+            if (data.tracks.total > 0) {
+                // Do something with 'data' 
+                fs.writeFile("spotsearch.txt", JSON.stringify(data, null, 2));
+
+                console.log("Artist: " + data.tracks.items[0].album.artists[0].name);
+                console.log("Song: " + data.tracks.items[0].name);
+                console.log("Album: " + data.tracks.items[0].album.name);
+                console.log("Preview Link: " + data.tracks.items[0].preview_url);
+            } else {
+                aceofbass();
+            }
+        });
+    } else {
+        aceofbass();
+
+    }
 }
 
 // movie-this
@@ -75,7 +113,7 @@ function moviethis() {
 
     request(queryUrl, function(error, response, body) {
         var movie = JSON.parse(body);
-        var title = movie.Title;
+
         console.log("*" + title);
         console.log("*" + movie.Year);
         console.log("*" + movie.imdbRating);
@@ -83,14 +121,6 @@ function moviethis() {
         console.log("*" + movie.Language);
         console.log("*" + movie.Plot);
         console.log("*" + movie.Actors);
-        // var rottenTitle = movieName.replace(/\+/g, "_");
-        // var newTitle = '';
-        // for (var i = 0; i < title.length; i++) {
-        //     if (["'", ".", ",", "-", ":"].indexOf(title[i]) === -1) {
-        //         newTitle += title[i];
-        //     }
-        // }
-        // var rottenTitle = newTitle.replace(/\s/g, "_");
         console.log("*" + movie.tomatoURL);
 
     });
