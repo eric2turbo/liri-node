@@ -26,8 +26,6 @@ switch (action) {
 
 //my-tweets
 
-
-
 function mytweets() {
 
     var params = { screen_name: 'nodejs', count: 5 };
@@ -45,49 +43,40 @@ function mytweets() {
 }
 
 //spotify-this-song
-function aceofbass() {
-    spotify.lookup({ type: 'track', id: "0hrBpAOgrt8RXigk83LLNE" }, function(err, data) {
+
+function spotifythissong() {
+    // if command input array length bigger than 3
+    var song = "the sign ace of bass";
+    if (process.argv.length > 3) {
+        var song = process.argv[3];
+        song.replace(/\s/g, '+');
+    }
+
+    spotify.search({ type: 'track', query: song }, function(err, data) {
         if (err) {
             console.log('Error occurred: ' + err);
             return;
         }
-        // Do something with 'data' 
-        console.log("CBC recommends this song:");
-        console.log("Artist: " + data.album.artists[0].name);
-        console.log("Song: " + data.name);
-        console.log("Album: " + data.album.name);
-        console.log("Preview Link: " + data.preview_url);
-    });
-}
+        if (data.tracks.total > 0) {
+            // Do something with 'data' 
+            //fs.writeFile("spotsearch.txt", JSON.stringify(data, null, 2));
 
-function spotifythissong() {
-    // if command input array length bigger than 3
-    if (process.argv.length > 3) {
-        var song = process.argv[3];
-        song.replace(/\s/g, '+');
-
-        spotify.search({ type: 'track', query: song }, function(err, data) {
-            if (err) {
-                console.log('Error occurred: ' + err);
-                return;
-            }
-            if (data.tracks.total > 0) {
-                // Do something with 'data' 
-                fs.writeFile("spotsearch.txt", JSON.stringify(data, null, 2));
-
+            console.log("Artist: " + data.tracks.items[0].album.artists[0].name);
+            console.log("Song: " + data.tracks.items[0].name);
+            console.log("Album: " + data.tracks.items[0].album.name);
+            console.log("Preview Link: " + data.tracks.items[0].preview_url);
+        } else {
+            spotify.search({ type: 'track', query: "the+sign+ace+of+bass" }, function(err, data) {
+                console.log("Here is a song since spotify can't find your choice");
                 console.log("Artist: " + data.tracks.items[0].album.artists[0].name);
                 console.log("Song: " + data.tracks.items[0].name);
                 console.log("Album: " + data.tracks.items[0].album.name);
                 console.log("Preview Link: " + data.tracks.items[0].preview_url);
-            } else {
-                aceofbass();
-            }
-        });
-    } else {
-        aceofbass();
-
-    }
+            });
+        }
+    });
 }
+
 
 // movie-this
 function moviethis() {
@@ -107,7 +96,6 @@ function moviethis() {
             }
         }
     }
-
 
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&tomatoes=true&r=json";
 
