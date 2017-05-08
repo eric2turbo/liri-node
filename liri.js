@@ -95,7 +95,7 @@ function moviethis() {
 
 
     var queryUrl = "http://www.omdbapi.com/?t=" + media + "&y=&plot=short&tomatoes=true&r=json";
-    console.log(queryUrl);
+    //console.log(queryUrl);
     request(queryUrl, function(error, response, body) {
         var movie = JSON.parse(body);
         //If movie not found, skip to else.  Otherwise list information
