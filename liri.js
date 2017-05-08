@@ -95,7 +95,7 @@ function moviethis() {
 
 
     var queryUrl = "http://www.omdbapi.com/?t=" + media + "&y=&plot=short&tomatoes=true&r=json";
-
+    console.log(queryUrl);
     request(queryUrl, function(error, response, body) {
         var movie = JSON.parse(body);
         //If movie not found, skip to else.  Otherwise list information
@@ -115,9 +115,17 @@ function moviethis() {
 
         } else {
             console.log("Could not find the movie.  Try this one: ");
-            //Set media to Mr Nobody and run moviethis() again
-            media = "Mr+Nobody";
-            moviethis();
+
+            movie = JSON.parse(body);
+            console.log("*Title: " + movie.Title);
+            console.log("*Year: " + movie.Year);
+            console.log("*IMDB Rating: " + movie.imdbRating);
+            console.log("*Country: " + movie.Country);
+            console.log("*Language: " + movie.Language);
+            console.log("*Plot: " + movie.Plot);
+            console.log("*Actors: " + movie.Actors);
+            console.log("*Rottentomatoes URL: " + movie.tomatoURL);
+
         }
     });
 
