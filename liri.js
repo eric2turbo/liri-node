@@ -142,7 +142,7 @@ function dowhatitsays() {
         if (dataArr.length > 1) {
             media = dataArr[1];
             media = media.replace(/\s/g, '+');
-            console.log("media dwis is: " + media);
+
         } else {
             media = "";
         }
